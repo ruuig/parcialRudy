@@ -1,0 +1,32 @@
+<!-- app/templates/retos/create.html -->
+{% extends 'layout.html' %}
+{% block title %}Nuevo reto{% endblock %}
+{% block content %}
+<h2>Nuevo reto</h2>
+<form method="post" action="{{ url_for('retos.create') }}" class="mt-3">
+  <div class="mb-3">
+    <label class="form-label">Título</label>
+    <input name="titulo" class="form-control" required maxlength="120">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Descripción</label>
+    <textarea name="descripcion" class="form-control" rows="4" required></textarea>
+  </div>
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Categoría</label>
+      <select name="categoria" class="form-select" required>
+        {% for c in categorias %}<option value="{{ c }}">{{ c|capitalize }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Dificultad</label>
+      <select name="dificultad" class="form-select" required>
+        {% for d in dificultades %}<option value="{{ d }}">{{ d|capitalize }}</option>{% endfor %}
+      </select>
+    </div>
+  </div>
+  <button class="btn btn-primary">Guardar</button>
+  <a class="btn btn-outline-secondary" href="{{ url_for('retos.index') }}">Cancelar</a>
+</form>
+{% endblock %}

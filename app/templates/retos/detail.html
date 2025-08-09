@@ -1,0 +1,31 @@
+<!-- app/templates/retos/detail.html -->
+{% extends 'layout.html' %}
+{% block title %}{{ reto.titulo }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center">
+  <h2 class="mb-0">{{ reto.titulo }}</h2>
+  <div>
+    <a class="btn btn-outline-primary" href="{{ url_for('retos.edit', reto_id=reto.id) }}">Editar</a>
+    <form class="d-inline" method="post" action="{{ url_for('retos.delete', reto_id=reto.id) }}" onsubmit="return confirm('¿Eliminar este reto?');">
+      <button class="btn btn-outline-danger">Eliminar</button>
+    </form>
+  </div>
+</div>
+<p class="text-muted mt-2">{{ reto.descripcion }}</p>
+<p>
+  <span class="badge text-bg-secondary">{{ reto.categoria|capitalize }}</span>
+  <span class="badge text-bg-info">{{ reto.dificultad|capitalize }}</span>
+  <span class="badge text-bg-{{ 'success' if reto.estado=='completado' else ('warning' if reto.estado=='en_proceso' else 'secondary') }}">{{ reto.estado.replace('_',' ')|capitalize }}</span>
+</p>
+<form class="mt-3" method="post" action="{{ url_for('retos.update_status', reto_id=reto.id) }}">
+  <label class="form-label">Actualizar estado</label>
+  <div class="input-group" style="max-width: 320px;">
+    <select name="estado" class="form-select">
+      {% for e in ['pendiente','en_proceso','completado'] %}
+        <option value="{{ e }}" {{ 'selected' if reto.estado==e else '' }}>{{ e.replace('_',' ')|capitalize }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn btn-primary">Cambiar</button>
+  </div>
+</form>
+{% endblock %}

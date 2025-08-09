@@ -1,0 +1,38 @@
+<!-- app/templates/retos/edit.html -->
+{% extends 'layout.html' %}
+{% block title %}Editar reto{% endblock %}
+{% block content %}
+<h2>Editar reto</h2>
+<form method="post">
+  <div class="mb-3">
+    <label class="form-label">Título</label>
+    <input name="titulo" class="form-control" value="{{ reto.titulo }}" required maxlength="120">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Descripción</label>
+    <textarea name="descripcion" class="form-control" rows="4" required>{{ reto.descripcion }}</textarea>
+  </div>
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Categoría</label>
+      <select name="categoria" class="form-select">
+        {% for c in categorias %}<option value="{{ c }}" {{ 'selected' if reto.categoria==c else '' }}>{{ c|capitalize }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Dificultad</label>
+      <select name="dificultad" class="form-select">
+        {% for d in dificultades %}<option value="{{ d }}" {{ 'selected' if reto.dificultad==d else '' }}>{{ d|capitalize }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Estado</label>
+      <select name="estado" class="form-select">
+        {% for e in estados %}<option value="{{ e }}" {{ 'selected' if reto.estado==e else '' }}>{{ e.replace('_',' ')|capitalize }}</option>{% endfor %}
+      </select>
+    </div>
+  </div>
+  <button class="btn btn-primary">Guardar cambios</button>
+  <a class="btn btn-outline-secondary" href="{{ url_for('retos.detail', reto_id=reto.id) }}">Cancelar</a>
+</form>
+{% endblock %}
