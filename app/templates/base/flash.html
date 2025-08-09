@@ -3,7 +3,18 @@
   {% if messages %}
     <div class="mt-2">
       {% for category, msg in messages %}
-        <div class="alert alert-{{ category }} mb-2">{{ msg }}</div>
+        <div class="alert alert-modern alert-{{ category }} d-flex align-items-center">
+          {% if category == 'success' %}
+            <i class="bi bi-check-circle-fill me-2"></i>
+          {% elif category == 'danger' %}
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          {% elif category == 'warning' %}
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+          {% else %}
+            <i class="bi bi-info-circle-fill me-2"></i>
+          {% endif %}
+          <span>{{ msg }}</span>
+        </div>
       {% endfor %}
     </div>
   {% endif %}

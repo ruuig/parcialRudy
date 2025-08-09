@@ -1,38 +1,163 @@
 <!-- app/templates/retos/edit.html -->
 {% extends 'layout.html' %}
 {% block title %}Editar reto{% endblock %}
+
 {% block content %}
-<h2>Editar reto</h2>
-<form method="post">
-  <div class="mb-3">
-    <label class="form-label">Título</label>
-    <input name="titulo" class="form-control" value="{{ reto.titulo }}" required maxlength="120">
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Descripción</label>
-    <textarea name="descripcion" class="form-control" rows="4" required>{{ reto.descripcion }}</textarea>
-  </div>
-  <div class="row">
-    <div class="col-md-4 mb-3">
-      <label class="form-label">Categoría</label>
-      <select name="categoria" class="form-select">
-        {% for c in categorias %}<option value="{{ c }}" {{ 'selected' if reto.categoria==c else '' }}>{{ c|capitalize }}</option>{% endfor %}
-      </select>
+<div class="container">
+  <div class="form-container">
+    
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a href="{{ url_for('retos.index') }}" class="breadcrumb-link">
+        <i class="fas fa-home"></i>
+        Retos
+      </a>
+      <span class="breadcrumb-separator">›</span>
+      <a href="{{ url_for('retos.detail', reto_id=reto.id) }}" class="breadcrumb-link">
+        {{ reto.titulo[:20] }}...
+      </a>
+      <span class="breadcrumb-separator">›</span>
+      <span class="breadcrumb-current">Editar</span>
+    </nav>
+
+    <!-- Header -->
+    <div class="form-header">
+      <div class="form-icon">
+        <i class="fas fa-edit"></i>
+      </div>
+      <h1>Editar reto</h1>
+      <p>Modifica los detalles de tu desafío</p>
     </div>
-    <div class="col-md-4 mb-3">
-      <label class="form-label">Dificultad</label>
-      <select name="dificultad" class="form-select">
-        {% for d in dificultades %}<option value="{{ d }}" {{ 'selected' if reto.dificultad==d else '' }}>{{ d|capitalize }}</option>{% endfor %}
-      </select>
+
+    <!-- Formulario -->
+    <div class="form-card">
+      <form method="post" class="challenge-form">
+        
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fas fa-heading"></i>
+            Título del reto
+          </label>
+          <input type="text" 
+                 name="titulo" 
+                 class="form-input" 
+                 value="{{ reto.titulo }}" 
+                 required 
+                 maxlength="120">
+          <div class="form-hint">
+            <i class="fas fa-info-circle"></i>
+            Máximo 120 caracteres
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fas fa-align-left"></i>
+            Descripción
+          </label>
+          <textarea name="descripcion" 
+                    class="form-textarea" 
+                    rows="5" 
+                    required>{{ reto.descripcion }}</textarea>
+          <div class="form-hint">
+            <i class="fas fa-lightbulb"></i>
+            Describe claramente los objetivos y entregables
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-tag"></i>
+              Categoría
+            </label>
+            <select name="categoria" class="form-select">
+              {% for c in categorias %}
+                <option value="{{ c }}" {% if reto.categoria==c %}selected{% endif %}>
+                  {% if c == 'nlp' %}🗣️{% elif c == 'vision' %}👁️{% elif c == 'ml' %}🤖{% else %}⚡{% endif %}
+                  {{ c|capitalize }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-tachometer-alt"></i>
+              Dificultad
+            </label>
+            <select name="dificultad" class="form-select">
+              {% for d in dificultades %}
+                <option value="{{ d }}" {% if reto.dificultad==d %}selected{% endif %}>
+                  {% if d == 'facil' %}🟢{% elif d == 'medio' %}🟡{% else %}🔴{% endif %}
+                  {{ d|capitalize }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-clipboard-check"></i>
+              Estado
+            </label>
+            <select name="estado" class="form-select">
+              {% for e in estados %}
+                <option value="{{ e }}" {% if reto.estado==e %}selected{% endif %}>
+                  {% if e == 'completado' %}✅{% elif e == 'en_proceso' %}⏳{% else %}⭕{% endif %}
+                  {{ e.replace('_',' ')|capitalize }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <a href="{{ url_for('retos.detail', reto_id=reto.id) }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i>
+            Volver al detalle
+          </a>
+          
+          <div class="action-buttons">
+            <button type="button" class="btn btn-outline" onclick="resetForm()">
+              <i class="fas fa-undo"></i>
+              Deshacer cambios
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i>
+              Guardar cambios
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
-    <div class="col-md-4 mb-3">
-      <label class="form-label">Estado</label>
-      <select name="estado" class="form-select">
-        {% for e in estados %}<option value="{{ e }}" {{ 'selected' if reto.estado==e else '' }}>{{ e.replace('_',' ')|capitalize }}</option>{% endfor %}
-      </select>
+
+    <!-- Información adicional -->
+    <div class="info-card">
+      <h3>
+        <i class="fas fa-exclamation-triangle"></i>
+        Información importante
+      </h3>
+      <ul>
+        <li>Los cambios se guardarán inmediatamente al enviar el formulario</li>
+        <li>El historial de cambios se mantiene para referencia futura</li>
+        <li>Puedes cancelar en cualquier momento sin guardar</li>
+      </ul>
     </div>
+
   </div>
-  <button class="btn btn-primary">Guardar cambios</button>
-  <a class="btn btn-outline-secondary" href="{{ url_for('retos.detail', reto_id=reto.id) }}">Cancelar</a>
-</form>
+</div>
+
+<script>
+function resetForm() {
+  if (confirm('¿Deshacer todos los cambios realizados?')) {
+    document.querySelector('.challenge-form').reset();
+    document.querySelector('[name="titulo"]').value = "{{ reto.titulo }}";
+    document.querySelector('[name="descripcion"]').value = "{{ reto.descripcion }}";
+    document.querySelector('[name="categoria"]').value = "{{ reto.categoria }}";
+    document.querySelector('[name="dificultad"]').value = "{{ reto.dificultad }}";
+    document.querySelector('[name="estado"]').value = "{{ reto.estado }}";
+  }
+}
+</script>
 {% endblock %}

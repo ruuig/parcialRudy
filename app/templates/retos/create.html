@@ -1,32 +1,164 @@
 <!-- app/templates/retos/create.html -->
 {% extends 'layout.html' %}
-{% block title %}Nuevo reto{% endblock %}
+{% block title %}Crear nuevo reto{% endblock %}
+
 {% block content %}
-<h2>Nuevo reto</h2>
-<form method="post" action="{{ url_for('retos.create') }}" class="mt-3">
-  <div class="mb-3">
-    <label class="form-label">Título</label>
-    <input name="titulo" class="form-control" required maxlength="120">
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Descripción</label>
-    <textarea name="descripcion" class="form-control" rows="4" required></textarea>
-  </div>
-  <div class="row">
-    <div class="col-md-4 mb-3">
-      <label class="form-label">Categoría</label>
-      <select name="categoria" class="form-select" required>
-        {% for c in categorias %}<option value="{{ c }}">{{ c|capitalize }}</option>{% endfor %}
-      </select>
+<div class="container">
+  <div class="form-container">
+    
+    <!-- Header -->
+    <div class="form-header">
+      <div class="form-icon">
+        <i class="fas fa-plus"></i>
+      </div>
+      <h1>Crear nuevo reto</h1>
+      <p>Define un nuevo desafío de inteligencia artificial</p>
     </div>
-    <div class="col-md-4 mb-3">
-      <label class="form-label">Dificultad</label>
-      <select name="dificultad" class="form-select" required>
-        {% for d in dificultades %}<option value="{{ d }}">{{ d|capitalize }}</option>{% endfor %}
-      </select>
+
+    <!-- Formulario -->
+    <div class="form-card">
+      <form method="post" action="{{ url_for('retos.create') }}" class="challenge-form">
+        
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fas fa-heading"></i>
+            Título del reto
+          </label>
+          <input name="titulo" 
+                 type="text"
+                 class="form-input" 
+                 placeholder="Ej: Clasificador de imágenes con CNN"
+                 required 
+                 maxlength="120">
+          <div class="form-hint">
+            <i class="fas fa-info-circle"></i>
+            Máximo 120 caracteres
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <i class="fas fa-align-left"></i>
+            Descripción
+          </label>
+          <textarea name="descripcion" 
+                    class="form-textarea" 
+                    rows="4" 
+                    placeholder="Describe en detalle el reto, objetivos y lo que se espera lograr..."
+                    required></textarea>
+          <div class="form-hint">
+            <i class="fas fa-lightbulb"></i>
+            Sé específico sobre los objetivos y entregables esperados
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-tag"></i>
+              Categoría
+            </label>
+            <select name="categoria" class="form-select" required>
+              <option value="">Selecciona una categoría</option>
+              {% for c in categorias %}
+                <option value="{{ c }}">
+                  {% if c == 'nlp' %}Procesamiento de Lenguaje Natural
+                  {% elif c == 'vision' %}Visión por Computadora
+                  {% elif c == 'ml' %}Machine Learning
+                  {% else %}{{ c|capitalize }}{% endif %}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fas fa-tachometer-alt"></i>
+              Dificultad
+            </label>
+            <select name="dificultad" class="form-select" required>
+              <option value="">Selecciona la dificultad</option>
+              {% for d in dificultades %}
+                <option value="{{ d }}">
+                  {% if d == 'facil' %}Principiante
+                  {% elif d == 'medio' %}Intermedio
+                  {% else %}Avanzado{% endif %}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <a href="{{ url_for('retos.index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i>
+            Volver al listado
+          </a>
+          
+          <div class="action-buttons">
+            <button type="button" class="btn btn-outline" onclick="guardarBorrador()">
+              <i class="fas fa-save"></i>
+              Guardar borrador
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-check"></i>
+              Crear reto
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
+
+    <!-- Tips -->
+    <div class="tips-card">
+      <h3>
+        <i class="fas fa-lightbulb"></i>
+        Tips para un buen reto
+      </h3>
+      <div class="tips-grid">
+        <div class="tip-item">
+          <i class="fas fa-bullseye"></i>
+          <div>
+            <h4>Objetivos claros</h4>
+            <p>Define metas específicas y medibles</p>
+          </div>
+        </div>
+        <div class="tip-item">
+          <i class="fas fa-puzzle-piece"></i>
+          <div>
+            <h4>Recursos necesarios</h4>
+            <p>Menciona herramientas y datasets</p>
+          </div>
+        </div>
+        <div class="tip-item">
+          <i class="fas fa-trophy"></i>
+          <div>
+            <h4>Criterios de éxito</h4>
+            <p>¿Cómo se mide el logro?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
-  <button class="btn btn-primary">Guardar</button>
-  <a class="btn btn-outline-secondary" href="{{ url_for('retos.index') }}">Cancelar</a>
-</form>
+</div>
+
+<script>
+function guardarBorrador() {
+  alert('Funcionalidad de borrador próximamente');
+}
+
+// Validación en tiempo real
+document.querySelector('.challenge-form').addEventListener('input', function(e) {
+  if (e.target.hasAttribute('required')) {
+    if (e.target.value.trim()) {
+      e.target.classList.remove('invalid');
+      e.target.classList.add('valid');
+    } else {
+      e.target.classList.remove('valid');
+      e.target.classList.add('invalid');
+    }
+  }
+});
+</script>
 {% endblock %}

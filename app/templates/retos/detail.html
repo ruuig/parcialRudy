@@ -1,31 +1,144 @@
 <!-- app/templates/retos/detail.html -->
 {% extends 'layout.html' %}
 {% block title %}{{ reto.titulo }}{% endblock %}
+
 {% block content %}
-<div class="d-flex justify-content-between align-items-center">
-  <h2 class="mb-0">{{ reto.titulo }}</h2>
-  <div>
-    <a class="btn btn-outline-primary" href="{{ url_for('retos.edit', reto_id=reto.id) }}">Editar</a>
-    <form class="d-inline" method="post" action="{{ url_for('retos.delete', reto_id=reto.id) }}" onsubmit="return confirm('¿Eliminar este reto?');">
-      <button class="btn btn-outline-danger">Eliminar</button>
-    </form>
+<div class="container">
+  <div class="detail-container">
+    
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a href="{{ url_for('retos.index') }}" class="breadcrumb-link">
+        <i class="fas fa-home"></i>
+        Retos
+      </a>
+      <span class="breadcrumb-separator">›</span>
+      <span class="breadcrumb-current">{{ reto.titulo[:30] }}...</span>
+    </nav>
+
+    <!-- Header principal -->
+    <div class="detail-header">
+      <div class="header-main">
+        <h1>{{ reto.titulo }}</h1>
+        
+        <div class="badges-container">
+          <span class="badge badge-category">
+            {% if reto.categoria == 'nlp' %}🗣️{% elif reto.categoria == 'vision' %}👁️{% elif reto.categoria == 'ml' %}🤖{% else %}⚡{% endif %}
+            {{ reto.categoria|capitalize }}
+          </span>
+          <span class="badge badge-difficulty">
+            {% if reto.dificultad == 'facil' %}🟢{% elif reto.dificultad == 'medio' %}🟡{% else %}🔴{% endif %}
+            {{ reto.dificultad|capitalize }}
+          </span>
+          {% if reto.estado == 'completado' %}
+            <span class="badge badge-completed">✅ Completado</span>
+          {% elif reto.estado == 'en_proceso' %}
+            <span class="badge badge-progress">⏳ En proceso</span>
+          {% else %}
+            <span class="badge badge-pending">⭕ Pendiente</span>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <a href="{{ url_for('retos.edit', reto_id=reto.id) }}" class="btn btn-outline">
+          <i class="fas fa-edit"></i>
+          Editar
+        </a>
+        <form class="inline-form" method="post" action="{{ url_for('retos.delete', reto_id=reto.id) }}" 
+              onsubmit="return confirm('¿Estás seguro de eliminar este reto?');">
+          <button class="btn btn-danger">
+            <i class="fas fa-trash"></i>
+            Eliminar
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Descripción -->
+    <div class="description-card">
+      <h3>
+        <i class="fas fa-file-text"></i>
+        Descripción del reto
+      </h3>
+      <p>{{ reto.descripcion }}</p>
+    </div>
+
+    <!-- Panel de acciones -->
+    <div class="action-panels">
+      
+      <!-- Panel de estado -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3>
+            <i class="fas fa-sync-alt"></i>
+            Actualizar estado
+          </h3>
+        </div>
+        <div class="panel-body">
+          <form method="post" action="{{ url_for('retos.update_status', reto_id=reto.id) }}">
+            <div class="form-group">
+              <label class="form-label">Estado actual</label>
+              <select name="estado" class="form-select">
+                {% for e in ['pendiente','en_proceso','completado'] %}
+                  <option value="{{ e }}" {% if reto.estado==e %}selected{% endif %}>
+                    {% if e == 'completado' %}✅ Completado
+                    {% elif e == 'en_proceso' %}⏳ En proceso
+                    {% else %}⭕ Pendiente{% endif %}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            <button class="btn btn-primary full-width">
+              <i class="fas fa-sync-alt"></i>
+              Actualizar estado
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Panel de información -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3>
+            <i class="fas fa-info-circle"></i>
+            Detalles del reto
+          </h3>
+        </div>
+        <div class="panel-body">
+          <div class="info-grid">
+            <div class="info-item">
+              <i class="fas fa-tag"></i>
+              <div>
+                <span class="info-label">Categoría</span>
+                <span class="info-value">{{ reto.categoria|capitalize }}</span>
+              </div>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-tachometer-alt"></i>
+              <div>
+                <span class="info-label">Dificultad</span>
+                <span class="info-value">{{ reto.dificultad|capitalize }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="suggestions">
+            <h4>
+              <i class="fas fa-lightbulb"></i>
+              Sugerencias
+            </h4>
+            <ul>
+              <li>Documenta tu progreso regularmente</li>
+              <li>Busca recursos y ejemplos similares</li>
+              <li>No dudes en pedir ayuda en la comunidad</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
   </div>
 </div>
-<p class="text-muted mt-2">{{ reto.descripcion }}</p>
-<p>
-  <span class="badge text-bg-secondary">{{ reto.categoria|capitalize }}</span>
-  <span class="badge text-bg-info">{{ reto.dificultad|capitalize }}</span>
-  <span class="badge text-bg-{{ 'success' if reto.estado=='completado' else ('warning' if reto.estado=='en_proceso' else 'secondary') }}">{{ reto.estado.replace('_',' ')|capitalize }}</span>
-</p>
-<form class="mt-3" method="post" action="{{ url_for('retos.update_status', reto_id=reto.id) }}">
-  <label class="form-label">Actualizar estado</label>
-  <div class="input-group" style="max-width: 320px;">
-    <select name="estado" class="form-select">
-      {% for e in ['pendiente','en_proceso','completado'] %}
-        <option value="{{ e }}" {{ 'selected' if reto.estado==e else '' }}>{{ e.replace('_',' ')|capitalize }}</option>
-      {% endfor %}
-    </select>
-    <button class="btn btn-primary">Cambiar</button>
-  </div>
-</form>
 {% endblock %}
