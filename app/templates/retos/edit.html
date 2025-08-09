@@ -74,7 +74,7 @@
             <select name="categoria" class="form-select">
               {% for c in categorias %}
                 <option value="{{ c }}" {% if reto.categoria==c %}selected{% endif %}>
-                  {% if c == 'nlp' %}🗣️{% elif c == 'vision' %}👁️{% elif c == 'ml' %}🤖{% else %}⚡{% endif %}
+                  {% if c == 'nlp' %}{% elif c == 'vision' %}👁️{% elif c == 'ml' %}🤖{% else %}⚡{% endif %}
                   {{ c|capitalize }}
                 </option>
               {% endfor %}
@@ -89,7 +89,7 @@
             <select name="dificultad" class="form-select">
               {% for d in dificultades %}
                 <option value="{{ d }}" {% if reto.dificultad==d %}selected{% endif %}>
-                  {% if d == 'facil' %}🟢{% elif d == 'medio' %}🟡{% else %}🔴{% endif %}
+                  {% if d == 'facil' %}{% elif d == 'medio' %}{% else %}{% endif %}
                   {{ d|capitalize }}
                 </option>
               {% endfor %}
@@ -104,7 +104,7 @@
             <select name="estado" class="form-select">
               {% for e in estados %}
                 <option value="{{ e }}" {% if reto.estado==e %}selected{% endif %}>
-                  {% if e == 'completado' %}✅{% elif e == 'en_proceso' %}⏳{% else %}⭕{% endif %}
+                  {% if e == 'completado' %}{% elif e == 'en_proceso' %}{% else %}{% endif %}
                   {{ e.replace('_',' ')|capitalize }}
                 </option>
               {% endfor %}

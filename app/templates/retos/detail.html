@@ -82,9 +82,9 @@
               <select name="estado" class="form-select">
                 {% for e in ['pendiente','en_proceso','completado'] %}
                   <option value="{{ e }}" {% if reto.estado==e %}selected{% endif %}>
-                    {% if e == 'completado' %}✅ Completado
-                    {% elif e == 'en_proceso' %}⏳ En proceso
-                    {% else %}⭕ Pendiente{% endif %}
+                    {% if e == 'completado' %}Completado
+                    {% elif e == 'en_proceso' %}En proceso
+                    {% else %}Pendiente{% endif %}
                   </option>
                 {% endfor %}
               </select>
